@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 from tabulate import tabulate
 
 
@@ -6,6 +9,21 @@ class Metrics:
         self.coverage_before_annotation = dict()
         self.coverage_after_annotation = dict()
         self.max_spectra = 0
+        self.finished = 0
+
+        self.time_100_back = None
+        self.time_100_now = datetime.now()
+        self.eta = 0
+
+    def update_progress(self):
+        self.finished += 1
+        if self.finished % 100 == 0:
+            self.time_100_back = self.time_100_now
+            self.time_100_now = datetime.now()
+            diff = (self.time_100_now - self.time_100_back).total_seconds()
+            self.eta = int(((self.max_spectra - self.finished)/100)*diff/60)
+        print(f'Progress {self.finished}/{self.max_spectra}, {(self.finished/self.max_spectra)*100:.2f}%, '
+              f'ETA {self.eta}m', end='\r')
 
     def set_params(self, target_attributes, length):
         """

@@ -65,6 +65,7 @@ class Logger:
 
         :param warning: LogWarning
         """
+        self.metrics.update_progress()
         self.last_error = ''
         self.queue.put_nowait(warning)
 
